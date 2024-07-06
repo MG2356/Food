@@ -3,9 +3,9 @@ const mongoose=require('mongoose')
 const FoodSchema=new mongoose.Schema({
   "image":String,
     "title":String,
-    "Mrp":String,
-    "price":String,
-    "type":String,
+    "Mrp": mongoose.Schema.Types.Decimal128,
+  "price": mongoose.Schema.Types.Decimal128,
+    "category ":String,
     "description":String,
     "status":String
 })
