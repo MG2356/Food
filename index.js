@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require('mongoose');
 const SignupModel = require("./Schema/Signup");
 const FoodDetail = require("./Schema/Food")
+const WeeklyDishes=require("./Schema/Weeklydishes")
 const dotenv = require("dotenv");
 const emailRoutes = require("./routes/emailRoutes");
 const jwt = require('jsonwebtoken');
@@ -73,6 +74,15 @@ app.post("/login", (req, res) => {
 
 app.post('/addmenu', (req, res) => {
   FoodDetail.create(req.body)
+    .then(product => {
+      res.json({ product });
+    })
+    .catch(err => {
+      console.log("Error during adding the product: ", err);
+    });
+});
+app.post('/addweeklydish', (req, res) => {
+  WeeklyDishes.create(req.body)
     .then(product => {
       res.json({ product });
     })
