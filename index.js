@@ -116,13 +116,39 @@ app.post('/addweeklydish', async (req, res) => {
 });
 
 // Subscribe to service
+// app.post('/subscribe', async (req, res) => {
+//   try {
+//     const subscription = await SubscriptionModel.create(req.body);
+//     res.json({ subscription });
+//   } catch (error) {
+//     console.error('Error subscribing:', error);
+//     res.status(500).json({ error: 'Subscription failed' });
+//   }
+// });
 app.post('/subscribe', async (req, res) => {
   try {
-    const subscription = await SubscriptionModel.create(req.body);
-    res.json({ subscription });
+    const { userId, type, startDate, endDate } = req.body;
+
+    // Validate the incoming request data
+    if (!userId || !type || !startDate || !endDate) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Create and save the new subscription
+    const newSubscription = new SubscriptionModel({
+      userId,
+      type,
+      startDate,
+      endDate,
+    });
+
+    await newSubscription.save();
+
+    // Respond with success message
+    res.status(201).json({ message: 'Subscription created successfully', subscription: newSubscription });
   } catch (error) {
-    console.error('Error subscribing:', error);
-    res.status(500).json({ error: 'Subscription failed' });
+    console.error('Error creating subscription:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -149,7 +175,7 @@ app.get('/weeklydishes', async (req, res) => {
 });
 
 // Get user subscriptions
-app.get('/subscriptions', authMiddleware, async (req, res) => {
+app.get('/subscription', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const subscriptions = await SubscriptionModel.find({ userId });
