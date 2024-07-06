@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const SignupModel = require("./Schema/Signup");
 const FoodDetail = require("./Schema/Food")
 const WeeklyDishes=require("./Schema/Weeklydishes")
+const SubscriptionModel=require("./Schema/Subscribe")
 const dotenv = require("dotenv");
 const emailRoutes = require("./routes/emailRoutes");
 const jwt = require('jsonwebtoken');
@@ -90,6 +91,20 @@ app.post('/addweeklydish', (req, res) => {
       console.log("Error during adding the product: ", err);
     });
 });
+
+app.post('/subscribe', (req, res) => {
+  SubscriptionModel.create(req.body)
+    .then(subscribe => {
+      res.json({ subscribe });
+    })
+    .catch(err => {
+      console.log("Error during adding the product: ", err);
+    });
+});
+
+
+
+
 //update by user
 app.put('/updateUser/:id', (req, res) => {
   const userId = req.params.userId;
@@ -156,6 +171,13 @@ app.get('/getProduct' ,(req,res)=>{
   .catch(err=>res.json(err))
 
 })
+app.get('/getWeekly' ,(req,res)=>{
+  WeeklyDishes.find({}).sort('-date') 
+
+  .then(product => res.json(product))
+  .catch(err=>res.json(err))
+
+})
 app.get('/getUsers' ,(req,res)=>{
   SignupModel.find({}).sort('-date') 
 
@@ -178,6 +200,17 @@ app.get('/product/:id', (req, res) => {
       res.status(500).json({ error: "Fetching product failed" });
     });
 });
+
+
+
+
+
+
+
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
