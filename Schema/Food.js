@@ -5,7 +5,7 @@ const FoodSchema=new mongoose.Schema({
     "title":String,
     "Mrp": mongoose.Schema.Types.Decimal128,
   "price": mongoose.Schema.Types.Decimal128,
-    "category ":String,
+    "category":String,
     "description":String,
     "status":String
 })
