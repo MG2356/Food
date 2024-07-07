@@ -155,7 +155,13 @@ app.post('/addweeklydish', async (req, res) => {
 //   }
 // });
 
+app.get('/getUsers' ,(req,res)=>{
+  SignupModel.find({}).sort('-date') 
 
+  .then(product => res.json(product))
+  .catch(err=>res.json(err))
+
+})
 // Get all products (FoodDetail)
 
 app.get('/products' ,(req,res)=>{
