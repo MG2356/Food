@@ -16,7 +16,7 @@ const emailRoutes = require('./routes/emailRoutes');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 2000;
+const PORT = process.env.PORT || 9000;
 const JWT_SECRET = process.env.JWT_SECRET;
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -157,7 +157,7 @@ app.post('/addweeklydish', async (req, res) => {
 
 
 // Get all products (FoodDetail)
-app.get('/products', async (req, res) => {
+app.get('/prouct', async (req, res) => {
   try {
     const products = await FoodDetail.find({});
     res.json({ products });
@@ -166,7 +166,13 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ error: 'Fetching products failed' });
   }
 });
+app.get('/products' ,(req,res)=>{
+  FoodDetail.find({}).sort('-date') 
 
+  .then(product => res.json(product))
+  .catch(err=>res.json(err))
+
+})
 // Get all weekly dishes (WeeklyDishes)
 app.get('/weeklydishes', async (req, res) => {
   try {
