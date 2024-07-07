@@ -16,7 +16,7 @@ const emailRoutes = require('./routes/emailRoutes');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 2000;
 const JWT_SECRET = process.env.JWT_SECRET;
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -108,7 +108,31 @@ app.post('/addproduct', async (req, res) => {
     res.status(500).json({ error: 'Adding product failed' });
   }
 });
+app.post('/subscribe', async (req, res) => {
+  try {
+    const { name, email, type } = req.body;
 
+    // Check if email already exists
+    const existingSubscription = await SubscriptionModel.findOne({ email });
+    if (existingSubscription) {
+      return res.status(400).json({ message: 'Subscription with this email already exists' });
+    }
+
+    // Create new subscription
+    const newSubscription = new SubscriptionModel({
+      name,
+      email,
+      type,
+    });
+
+    await newSubscription.save();
+
+    res.status(201).json({ message: 'Subscription created successfully', subscription: newSubscription });
+  } catch (error) {
+    console.error('Error creating subscription:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 // Add weekly dish (WeeklyDishes)
 app.post('/addweeklydish', async (req, res) => {
   try {
@@ -130,32 +154,7 @@ app.post('/addweeklydish', async (req, res) => {
 //     res.status(500).json({ error: 'Subscription failed' });
 //   }
 // });
-app.post('/subscribe', async (req, res) => {
-  try {
-    const { userId, type, startDate, endDate } = req.body;
 
-    // Validate the incoming request data
-    if (!userId || !type || !startDate || !endDate) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    // Create and save the new subscription
-    const newSubscription = new SubscriptionModel({
-      userId,
-      type,
-      startDate,
-      endDate,
-    });
-
-    await newSubscription.save();
-
-    // Respond with success message
-    res.status(201).json({ message: 'Subscription created successfully', subscription: newSubscription });
-  } catch (error) {
-    console.error('Error creating subscription:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 // Get all products (FoodDetail)
 app.get('/products', async (req, res) => {
