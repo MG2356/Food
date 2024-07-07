@@ -16,7 +16,7 @@ const emailRoutes = require('./routes/emailRoutes');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 6000;
 const JWT_SECRET = process.env.JWT_SECRET;
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -157,15 +157,7 @@ app.post('/addweeklydish', async (req, res) => {
 
 
 // Get all products (FoodDetail)
-app.get('/prouct', async (req, res) => {
-  try {
-    const products = await FoodDetail.find({});
-    res.json({ products });
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({ error: 'Fetching products failed' });
-  }
-});
+
 app.get('/products' ,(req,res)=>{
   FoodDetail.find({}).sort('-date') 
 
@@ -175,25 +167,18 @@ app.get('/products' ,(req,res)=>{
 })
 // Get all weekly dishes (WeeklyDishes)
 app.get('/weeklydishes', async (req, res) => {
-  try {
-    const dishes = await WeeklyDishes.find({});
-    res.json({ dishes });
-  } catch (error) {
-    console.error('Error fetching weekly dishes:', error);
-    res.status(500).json({ error: 'Fetching weekly dishes failed' });
-  }
+  WeeklyDishes.find({}).sort('-date') 
+
+  .then(product => res.json(product))
+  .catch(err=>res.json(err))
 });
 
 // Get user subscriptions
-app.get('/subscription', authMiddleware, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const subscriptions = await SubscriptionModel.find({ userId });
-    res.json({ subscriptions });
-  } catch (error) {
-    console.error('Error fetching subscriptions:', error);
-    res.status(500).json({ error: 'Fetching subscriptions failed' });
-  }
+app.get('/subscription', async (req, res) => {
+  SubscriptionModel.find({}).sort('-date') 
+
+  .then(product => res.json(product))
+  .catch(err=>res.json(err))
 });
 
 // Update user profile
