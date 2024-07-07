@@ -67,6 +67,8 @@ app.post('/register', async (req, res) => {
 });
 
 // User login
+// User login
+// User login
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -86,12 +88,15 @@ app.post('/login', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ message: 'Login successful', token });
+    console.log('Login successful:', { message: 'Login successful', token, user }); // Logging
+    res.json({ message: 'Login successful', token, user });
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ error: 'Login failed' });
   }
 });
+
+
 
 // Add product (FoodDetail)
 app.post('/addproduct', async (req, res) => {
